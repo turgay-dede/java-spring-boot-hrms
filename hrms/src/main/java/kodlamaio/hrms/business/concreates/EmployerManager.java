@@ -1,6 +1,8 @@
 package kodlamaio.hrms.business.concreates;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +26,7 @@ public class EmployerManager implements EmployerService {
 		super();
 		this.employerDao = employerDao;
 	}
+	Map<String,String> message = new HashMap<String, String>();
 
 	@Override
 	public List<Employer> getAll() {
@@ -34,11 +37,13 @@ public class EmployerManager implements EmployerService {
 	public Result add(Employer employer) {
 
 		if (!isRealPhoneNumber(employer)) {
-			return new ErrorResult(Messages.invalidPhoneNumber);
+			message.put("invalidPhoneNumber", Messages.invalidPhoneNumber);
+			return new ErrorResult(message);
 		}
 
 		this.employerDao.save(employer);
-		return new SuccessResult(Messages.emloyerAdded);
+		message.put("emloyerAdded", Messages.emloyerAdded);
+		return new SuccessResult(message);
 	}
 
 	

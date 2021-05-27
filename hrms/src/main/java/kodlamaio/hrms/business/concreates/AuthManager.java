@@ -1,5 +1,7 @@
 package kodlamaio.hrms.business.concreates;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.modelmapper.ModelMapper;
@@ -52,6 +54,7 @@ public class AuthManager implements AuthService {
 		this.employeeConfirmsEmployerService = employeeConfirmsEmployerService;
 
 	}
+	Map<String,String> message = new HashMap<String, String>();
 
 	@Override
 	public Result registerToCandidate(CandidateDto candidateDto) {
@@ -59,37 +62,43 @@ public class AuthManager implements AuthService {
 
 		if (!isAllFieldsFilled(candidateDto.getFirstName(), candidateDto.getLastName(),
 				candidateDto.getIdentificationNumber(), candidateDto.getEmail(), candidateDto.getPassword())) {
-			return new ErrorResult(Messages.allFieldsFilled);
+			message.put("allFieldsFilled", Messages.allFieldsFilled);
+			
 		}
 
 		if (!isMailFormatValid(candidateDto.getEmail())) {
-			return new ErrorResult(Messages.mailFormatNotValid);
+			message.put("mailFormatNotValid", Messages.mailFormatNotValid);			
 		}
 
 		if (isEmailExists(candidateDto.getEmail())) {
-			return new ErrorResult(Messages.emailExists);
+			message.put("emailExists", Messages.emailExists);	
 		}
 
 		if (isIdentificationNumberExists(candidateDto.getIdentificationNumber())) {
-			return new ErrorResult(Messages.IdentificationNumberExists);
+			message.put("IdentificationNumberExists", Messages.IdentificationNumberExists);	
+			
 		}
 
 		if (!isEqualsPasswordConfirm(candidateDto.getPassword(), candidateDto.getConfirmPassword())) {
-
-			return new ErrorResult(Messages.passwordNotMatched);
+			message.put("passwordNotMatched", Messages.passwordNotMatched);
 		}
 
 		// Fake Mernis
 		if (!this.validationService.CheckIfRealPerson(candidateDto.getFirstName(), candidateDto.getLastName(),
 				candidateDto.getIdentificationNumber(), candidateDto.getBirthDate().toString())) {
-			return new ErrorResult(Messages.verificationError);
+
+			message.put("verificationError", Messages.verificationError);
+		}
+		if(message.size() > 0) {
+			return new ErrorResult(message);
 		}
 
 		candidateService.add(candidate);
 		// Fake Email
 		verificationService.sendEmail(candidateDto.getEmail(),
 				verificationCodeService.generateCode(candidate.getId()).getData());
-		return new SuccessResult(Messages.registerAndVerification);
+		message.put("registerAndVerification", Messages.registerAndVerification);
+		return new SuccessResult(message);
 	}
 
 	@Override
@@ -97,11 +106,14 @@ public class AuthManager implements AuthService {
 		Employer employer = modelMapper.map(employerDto, Employer.class);
 
 		if (!isEmailEqualsToDomain(employerDto.getEmail(), employerDto.getWebAddress())) {
-			return new ErrorResult(Messages.emailEqualsToDomain);
+			message.put("emailEqualsToDomain", Messages.emailEqualsToDomain);
 		}
 
 		if (isEmailExists(employerDto.getEmail())) {
-			return new ErrorResult(Messages.emailExists);
+			message.put("emailExists", Messages.emailExists);
+		}
+		if(message.size() > 0) {
+			return new ErrorResult(message);
 		}
 
 		this.employerService.add(employer);
@@ -111,7 +123,8 @@ public class AuthManager implements AuthService {
 				verificationCodeService.generateCode(employer.getId()).getData());
 
 		// TODO: Employee Verify
-		return new SuccessResult(Messages.registerAndVerification);
+		message.put("registerAndVerification", Messages.registerAndVerification);
+		return new SuccessResult(message);
 	}
 	
 	@Override
@@ -119,7 +132,8 @@ public class AuthManager implements AuthService {
 		VerificationCode verificationCode = this.verificationCodeService.findByCode(code);		
 		verificationCode.setVerified(true);
 		this.verificationCodeService.add(verificationCode);
-		return new SuccessResult(Messages.verifiedCandidate);
+		message.put("verifiedCandidate", Messages.verifiedCandidate);
+		return new SuccessResult(message);
 	}
 
 	@Override
@@ -128,7 +142,8 @@ public class AuthManager implements AuthService {
 				.findByEmployer(employerId);
 		employeeConfirmsEmployer.setConfirmed(true);
 		this.employeeConfirmsEmployerService.add(employeeConfirmsEmployer);
-		return new SuccessResult(Messages.verifiedEmployer);
+		message.put("verifiedEmployer", Messages.verifiedEmployer);
+		return new SuccessResult(message);
 	}
 
 	// Business Rules

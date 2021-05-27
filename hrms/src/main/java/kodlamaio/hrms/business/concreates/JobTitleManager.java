@@ -1,6 +1,8 @@
 package kodlamaio.hrms.business.concreates;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,17 +32,20 @@ public class JobTitleManager implements JobTitleService {
 	public List<JobTitle> getAll() {
 		return this.jobTitleDao.findAll();
 	}
+	Map<String,String> message = new HashMap<String, String>();
 
 	@Override
 	public Result add(JobTitle jobTitle) {
 
 		if (JobTitleExists(jobTitle.getTitle())) {
-			return new ErrorResult(Messages.jobTitleExists);
+			message.put("jobTitleExists", Messages.jobTitleExists);
+			return new ErrorResult(message);
 		}
 
 		jobTitle.setId(0);
 		this.jobTitleDao.save(jobTitle);
-		return new SuccessResult(Messages.jobTitleAdded);
+		message.put("jobTitleAdded", Messages.jobTitleAdded);
+		return new SuccessResult(message);
 
 	}
 
@@ -48,9 +53,11 @@ public class JobTitleManager implements JobTitleService {
 	public DataResult<JobTitle> getByTitle(String title) {
 		JobTitle data = this.jobTitleDao.findByTitle(title);
 		if (data != null) {
-			return new SuccessDataResult<JobTitle>(data, Messages.foundJobTitle);
+			message.put("foundJobTitle", Messages.foundJobTitle);
+			return new SuccessDataResult<JobTitle>(data,message);
 		} else {
-			return new ErrorDataResult<>(Messages.notFoundJobTitle);
+			message.put("notFoundJobTitle", Messages.notFoundJobTitle);
+			return new ErrorDataResult<>(message);
 		}
 	}
 
