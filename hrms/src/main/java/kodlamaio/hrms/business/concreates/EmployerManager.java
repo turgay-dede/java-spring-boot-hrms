@@ -17,17 +17,20 @@ import kodlamaio.hrms.core.utilities.results.SuccessResult;
 import kodlamaio.hrms.dataAccess.abstracts.EmployerDao;
 import kodlamaio.hrms.entities.concreates.Employer;
 
+
 @Service
 public class EmployerManager implements EmployerService {
 	private EmployerDao employerDao;
 
+
 	@Autowired
 	public EmployerManager(EmployerDao employerDao) {
 		super();
-		this.employerDao = employerDao;
+		this.employerDao = employerDao;		
 	}
-	Map<String,String> message = new HashMap<String, String>();
-
+	
+	Map<String, String> message = new HashMap<String, String>();
+	
 	@Override
 	public List<Employer> getAll() {
 		return this.employerDao.findAll();
@@ -35,16 +38,21 @@ public class EmployerManager implements EmployerService {
 
 	@Override
 	public Result add(Employer employer) {
-
+		message.clear();
+		
 		if (!isRealPhoneNumber(employer)) {
 			message.put("invalidPhoneNumber", Messages.invalidPhoneNumber);
 			return new ErrorResult(message);
 		}
 
 		this.employerDao.save(employer);
+		
 		message.put("emloyerAdded", Messages.emloyerAdded);
+		
 		return new SuccessResult(message);
 	}
+	
+	
 
 	
 	
@@ -58,12 +66,17 @@ public class EmployerManager implements EmployerService {
 				+ "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$";
 
 		Pattern pattern = Pattern.compile(patterns);
+		
 		Matcher matcher = pattern.matcher(employer.getPhoneNumber());
+		
 		if (!matcher.matches()) {
 			return false;
 		}
+		
 		return true;
 
 	}
+
+	
 
 }

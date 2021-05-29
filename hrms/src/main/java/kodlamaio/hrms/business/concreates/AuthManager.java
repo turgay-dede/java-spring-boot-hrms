@@ -39,6 +39,7 @@ public class AuthManager implements AuthService {
 	private VerificationCodeService verificationCodeService;
 	private EmployeeConfirmsEmployerService employeeConfirmsEmployerService;
 
+
 	@Autowired
 	public AuthManager(ModelMapper modelMapper, CandidateService candidateService, EmployerService employerService,
 			UserService userService, ValidationService validationService, VerificationService verificationService,
@@ -52,35 +53,37 @@ public class AuthManager implements AuthService {
 		this.verificationService = verificationService;
 		this.verificationCodeService = verificationCodeService;
 		this.employeeConfirmsEmployerService = employeeConfirmsEmployerService;
-
 	}
-	Map<String,String> message = new HashMap<String, String>();
-
+	
+	Map<String, String> message = new HashMap<String, String>();
+	
 	@Override
 	public Result registerToCandidate(CandidateDto candidateDto) {
-		Candidate candidate = modelMapper.map(candidateDto, Candidate.class);
-
+		Candidate candidate = modelMapper.map(candidateDto, Candidate.class);	
+		
+		message.clear();
 		if (!isAllFieldsFilled(candidateDto.getFirstName(), candidateDto.getLastName(),
 				candidateDto.getIdentificationNumber(), candidateDto.getEmail(), candidateDto.getPassword())) {
 			message.put("allFieldsFilled", Messages.allFieldsFilled);
-			
-		}
 
+		}
+		String email = "";
 		if (!isMailFormatValid(candidateDto.getEmail())) {
-			message.put("mailFormatNotValid", Messages.mailFormatNotValid);			
+			email = Messages.mailFormatNotValid + ". ";			
 		}
 
 		if (isEmailExists(candidateDto.getEmail())) {
-			message.put("emailExists", Messages.emailExists);	
+			email = Messages.emailExists + ". ";
+			message.put("email", email);
 		}
 
 		if (isIdentificationNumberExists(candidateDto.getIdentificationNumber())) {
-			message.put("IdentificationNumberExists", Messages.IdentificationNumberExists);	
-			
+			message.put("identificationNumber", Messages.IdentificationNumberExists);
+
 		}
 
 		if (!isEqualsPasswordConfirm(candidateDto.getPassword(), candidateDto.getConfirmPassword())) {
-			message.put("passwordNotMatched", Messages.passwordNotMatched);
+			message.put("password", Messages.passwordNotMatched);
 		}
 
 		// Fake Mernis
@@ -89,7 +92,7 @@ public class AuthManager implements AuthService {
 
 			message.put("verificationError", Messages.verificationError);
 		}
-		if(message.size() > 0) {
+		if (message.size() > 0) {
 			return new ErrorResult(message);
 		}
 
@@ -97,22 +100,39 @@ public class AuthManager implements AuthService {
 		// Fake Email
 		verificationService.sendEmail(candidateDto.getEmail(),
 				verificationCodeService.generateCode(candidate.getId()).getData());
+		
 		message.put("registerAndVerification", Messages.registerAndVerification);
+		
 		return new SuccessResult(message);
 	}
 
 	@Override
 	public Result registerToEmployer(EmployerDto employerDto) {
 		Employer employer = modelMapper.map(employerDto, Employer.class);
+		
+		message.clear();
 
+		String email = "";
+
+		if (isEmailExists(employerDto.getEmail())) {			
+			email += Messages.emailExists + ". ";
+
+		}
 		if (!isEmailEqualsToDomain(employerDto.getEmail(), employerDto.getWebAddress())) {
-			message.put("emailEqualsToDomain", Messages.emailEqualsToDomain);
+			email += Messages.emailEqualsToDomain + ". ";
+			
 		}
-
-		if (isEmailExists(employerDto.getEmail())) {
-			message.put("emailExists", Messages.emailExists);
+		
+		if(!email.isEmpty()) {
+			message.put("email", email);
 		}
-		if(message.size() > 0) {
+		
+		
+		if (!isEqualsPasswordConfirm(employerDto.getPassword(), employerDto.getConfirmPassword())) {
+			message.put("password", Messages.passwordNotMatched);
+		}
+		
+		if (message.size() > 0) {
 			return new ErrorResult(message);
 		}
 
@@ -124,25 +144,38 @@ public class AuthManager implements AuthService {
 
 		// TODO: Employee Verify
 		message.put("registerAndVerification", Messages.registerAndVerification);
+		
 		return new SuccessResult(message);
 	}
-	
+
 	@Override
 	public Result verifyToCandidate(String code) {
-		VerificationCode verificationCode = this.verificationCodeService.findByCode(code);		
+		VerificationCode verificationCode = this.verificationCodeService.findByCode(code);
+		
+		message.clear();
+		
 		verificationCode.setVerified(true);
+		
 		this.verificationCodeService.add(verificationCode);
+		
 		message.put("verifiedCandidate", Messages.verifiedCandidate);
+		
 		return new SuccessResult(message);
 	}
 
 	@Override
 	public Result verifyToEmployer(int employerId) {
 		EmployeeConfirmsEmployer employeeConfirmsEmployer = this.employeeConfirmsEmployerService
-				.findByEmployer(employerId);
+				.findByEmployer(employerId);		
+		
+		message.clear();
+		
 		employeeConfirmsEmployer.setConfirmed(true);
+		
 		this.employeeConfirmsEmployerService.add(employeeConfirmsEmployer);
+		
 		message.put("verifiedEmployer", Messages.verifiedEmployer);
+		
 		return new SuccessResult(message);
 	}
 
@@ -180,6 +213,6 @@ public class AuthManager implements AuthService {
 			return false;
 		}
 		return true;
-	}	
+	}
 
 }

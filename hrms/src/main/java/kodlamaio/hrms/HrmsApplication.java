@@ -1,9 +1,13 @@
 package kodlamaio.hrms;
 
+import java.util.AbstractMap;
+import java.util.HashMap;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -28,6 +32,12 @@ public class HrmsApplication {
 	@Bean
 	 public ModelMapper modelMapper() {
 	        return new ModelMapper();
-	    }
+	    }	
+	
+	@Bean	
+	@Scope("prototype")
+	 public AbstractMap<String, String> messageMap() {
+	        return new HashMap<String, String>();
+	    }	
 
 }

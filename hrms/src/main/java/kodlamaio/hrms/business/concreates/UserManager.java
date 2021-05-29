@@ -24,8 +24,8 @@ public class UserManager implements UserService{
 		super();
 		this.userDao = userDao;
 	}
-	Map<String,String> message = new HashMap<String, String>();
-
+	
+	Map<String, String> message = new HashMap<String, String>();
 
 	@Override
 	public List<User> getAll() {
@@ -34,13 +34,17 @@ public class UserManager implements UserService{
 	
 	@Override
 	public DataResult<User> findByEmail(String email) {
+		message.clear();
 		
 		User data = this.userDao.findByEmail(email);
+		
 		if (data != null) {
 			message.put("listedByEmail", Messages.listedByEmail);
 			return new SuccessDataResult<User>(data,message);			
 		}
+		
 		message.put("notFoundByEmail", Messages.notFoundByEmail);
+		
 		return new ErrorDataResult<User>(message);
 		
 	}

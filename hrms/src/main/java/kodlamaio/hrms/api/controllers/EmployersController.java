@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import kodlamaio.hrms.business.abstracts.EmployerService;
 import kodlamaio.hrms.core.utilities.results.Result;
 import kodlamaio.hrms.entities.concreates.Employer;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +35,5 @@ public class EmployersController {
 	@PostMapping("/add")
 	public Result add(@RequestBody Employer employer){
 		return this.employerService.add(employer);		
-	}
-	
+	}	
 }

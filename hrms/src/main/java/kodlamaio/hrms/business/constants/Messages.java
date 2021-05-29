@@ -37,4 +37,11 @@ public class Messages {
 	public static String codeGenerated = "Kod oluşturuldu";
 	public static String verificationCodeAdded="Doğrulama kodu eklendi";
 	
+	//JobPosting
+	public static String addJobPosting = "İlan eklendi"; 
+	public static String passiveJobPosting = "İlan kapatıldı"; 
+	public static String activeJobPostingListed = "Aktif ilanlar listelendi";
+	public static String notFoundActiveJobPosting = "Aktif ilan bulunamadı";
+	public static String companyActivePostingListed = "Şirketin aktif ilanları listelendi";
+	
 }

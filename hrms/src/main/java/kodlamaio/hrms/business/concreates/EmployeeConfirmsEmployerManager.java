@@ -18,6 +18,7 @@ public class EmployeeConfirmsEmployerManager implements EmployeeConfirmsEmployer
 		super();
 		this.employeeConfirmsEmployerDao = employeeConfirmsEmployerDao;
 	}
+	
 
 	@Override
 	public List<EmployeeConfirmsEmployer> getAll() {

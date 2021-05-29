@@ -27,22 +27,34 @@ public class VerificationCodeManager implements VerificationCodeService {
 		super();
 		this.verificationCodeDao = verificationCodeDao;
 	}
-	Map<String,String> message = new HashMap<String, String>();
+	
+	Map<String, String> message = new HashMap<String, String>();
+	
 
 	@Override
 	public List<VerificationCode> getAll() {
 		return this.verificationCodeDao.findAll();
-	}
+	}	
 
 	@Override
 	public DataResult<String> generateCode(int userId) {
+		message.clear();
+		
+		Map<String, String> messageMap = new HashMap<String, String>();
+		
 		String code = UUID.randomUUID().toString();
+		
 		VerificationCode verificationCode = new VerificationCode();
+		
 		verificationCode.setUserId(userId);
+		
 		verificationCode.setCode(code);
+		
 		this.verificationCodeDao.save(verificationCode);
-		message.put("codeGenerated", Messages.codeGenerated);
-		return new SuccessDataResult<String>(code,message);
+		
+		messageMap.put("codeGenerated", Messages.codeGenerated);
+		
+		return new SuccessDataResult<String>(code,messageMap);
 	}
 
 	@Override
@@ -53,9 +65,15 @@ public class VerificationCodeManager implements VerificationCodeService {
 
 	@Override
 	public Result add(VerificationCode verificationCode) {
+		message.clear();
+		
+		Map<String, String> messageMap = new HashMap<String, String>();
+		
 		this.verificationCodeDao.save(verificationCode);
-		message.put("verificationCodeAdded", Messages.verificationCodeAdded);
-		return new SuccessResult(message);
+		
+		messageMap.put("verificationCodeAdded", Messages.verificationCodeAdded);
+		
+		return new SuccessResult(messageMap);
 	}	
 
 }
