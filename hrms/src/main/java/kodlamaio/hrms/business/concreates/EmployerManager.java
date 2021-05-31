@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import kodlamaio.hrms.business.abstracts.EmployerService;
 import kodlamaio.hrms.business.constants.Messages;
+import kodlamaio.hrms.core.utilities.results.DataResult;
 import kodlamaio.hrms.core.utilities.results.Result;
+import kodlamaio.hrms.core.utilities.results.SuccessDataResult;
 import kodlamaio.hrms.core.utilities.results.SuccessResult;
 import kodlamaio.hrms.dataAccess.abstracts.EmployerDao;
 import kodlamaio.hrms.entities.concreates.Employer;
@@ -26,8 +28,8 @@ public class EmployerManager implements EmployerService {
 	}	
 	
 	@Override
-	public List<Employer> getAll() {
-		return this.employerDao.findAll();
+	public DataResult<List<Employer>> getAll() {
+		return new SuccessDataResult<List<Employer>>(this.employerDao.findAll());
 	}
 
 	@Override
@@ -36,6 +38,12 @@ public class EmployerManager implements EmployerService {
 		this.employerDao.save(employer);	
 		
 		return new SuccessResult(Messages.emloyerAdded);
+	}
+
+	@Override
+	public DataResult<Employer> getById(int id) {
+		
+		return new SuccessDataResult<Employer>(this.employerDao.getOne(id));
 	}	
 
 }

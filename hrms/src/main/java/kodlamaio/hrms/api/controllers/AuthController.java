@@ -37,24 +37,19 @@ public class AuthController {
 
 	@PostMapping("/register-candidate")
 	public Result registerToCandidate(@Valid @RequestBody CandidateDto candidateDto) {
-		return this.authService.registerToCandidate(candidateDto);
+		return this.authService.candidateRegister(candidateDto);
 
 	}
 
 	@PostMapping("/register-employer")
 	public Result registerToEmployer(@RequestBody EmployerDto employerDto) {
-		return this.authService.registerToEmployer(employerDto);
+		return this.authService.employerRegister(employerDto);
 
 	}
 
-	@GetMapping("/verify-employer")
-	public Result verifyEmployer(int employerId) {
-		return this.authService.verifyToEmployer(employerId);
-	}
-
-	@GetMapping("/verify-candidate")
+	@GetMapping("/emailVerify")
 	public Result verifyCandidate(String code) {
-		return this.authService.verifyToCandidate(code);
+		return this.authService.emailVerify(code);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)

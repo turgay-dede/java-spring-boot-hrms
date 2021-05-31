@@ -49,11 +49,11 @@ public class JobPostingManager implements JobPostingService {
 	}
 	
 	@Override
-	public Result passiveJobPosting(int id) {
+	public Result changeStatus(int id) {
 		
-		JobPosting tempJobPosting = this.jobPostingDao.getOne(id);	
+		JobPosting tempJobPosting = this.jobPostingDao.getOne(id);			
 		
-		tempJobPosting.setStatus(false);
+		tempJobPosting.setStatus(!tempJobPosting.isStatus());
 		
 		this.jobPostingDao.save(tempJobPosting);
 

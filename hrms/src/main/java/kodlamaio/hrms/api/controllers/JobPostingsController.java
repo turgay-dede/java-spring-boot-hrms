@@ -33,9 +33,9 @@ public class JobPostingsController {
 		return this.jobPostingService.add(jobPostingAddDto);
 	}	
 	
-	@GetMapping("/passiveJobPosting")
-	public Result passiveJobPosting(@RequestParam int id){
-		return this.jobPostingService.passiveJobPosting(id);
+	@GetMapping("/changeStatus")
+	public Result changeStatus(@RequestParam int id){
+		return this.jobPostingService.changeStatus(id);
 	}	
 	
 	@GetMapping("/getByStatusTrue")

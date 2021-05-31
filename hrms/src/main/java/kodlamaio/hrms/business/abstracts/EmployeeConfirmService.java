@@ -2,9 +2,10 @@ package kodlamaio.hrms.business.abstracts;
 
 import java.util.List;
 
+import kodlamaio.hrms.core.utilities.results.DataResult;
 import kodlamaio.hrms.entities.concreates.EmployeeConfirm;
 
 public interface EmployeeConfirmService {
-	List<EmployeeConfirm> getAll();
+	DataResult<List<EmployeeConfirm>> getAll();
 
 }

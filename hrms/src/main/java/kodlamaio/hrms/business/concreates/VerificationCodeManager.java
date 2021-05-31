@@ -27,8 +27,8 @@ public class VerificationCodeManager implements VerificationCodeService {
 	}	
 
 	@Override
-	public List<VerificationCode> getAll() {
-		return this.verificationCodeDao.findAll();
+	public DataResult<List<VerificationCode>> getAll() {
+		return new SuccessDataResult<List<VerificationCode>>(this.verificationCodeDao.findAll());
 	}	
 
 	@Override
@@ -48,9 +48,9 @@ public class VerificationCodeManager implements VerificationCodeService {
 	}
 
 	@Override
-	public VerificationCode findByCode(String code) {
+	public DataResult<VerificationCode> findByCode(String code) {
 		
-		return this.verificationCodeDao.findByCode(code);
+		return new SuccessDataResult<VerificationCode>(this.verificationCodeDao.findByCode(code));
 	}
 
 	@Override

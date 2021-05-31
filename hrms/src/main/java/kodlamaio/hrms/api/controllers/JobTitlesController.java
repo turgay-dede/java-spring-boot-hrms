@@ -37,7 +37,7 @@ public class JobTitlesController {
 	}
 
 	@GetMapping("/getall")
-	private List<JobTitle> getAll(){
+	private DataResult<List<JobTitle>> getAll(){
 		return this.jobTitleService.getAll();
 	}
 	

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kodlamaio.hrms.business.abstracts.VerificationCodeService;
+import kodlamaio.hrms.core.utilities.results.DataResult;
 import kodlamaio.hrms.entities.concreates.VerificationCode;
 
 @RestController
@@ -21,7 +22,7 @@ public class VerificationCodesController {
 		this.verificationCodeService = verificationCodeService;
 	}
 	@GetMapping("/getall")
-	public List<VerificationCode> getAll(){
+	public DataResult<List<VerificationCode>> getAll(){
 		return this.verificationCodeService.getAll();
 	}
 	

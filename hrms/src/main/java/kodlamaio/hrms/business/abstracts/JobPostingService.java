@@ -10,7 +10,7 @@ import kodlamaio.hrms.entities.dtos.JobPostingDto;
 public interface JobPostingService {
 	Result add(JobPostingAddDto jobPostingAddDto);
 	
-	Result passiveJobPosting(int id);
+	Result changeStatus(int id);
 	
 	DataResult<List<JobPostingDto>> getByStatusTrue();
 	

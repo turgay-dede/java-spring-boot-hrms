@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import kodlamaio.hrms.business.abstracts.AuthService;
 import kodlamaio.hrms.business.abstracts.CandidateService;
-import kodlamaio.hrms.business.abstracts.EmployeeConfirmsEmployerService;
 import kodlamaio.hrms.business.abstracts.EmployerService;
 import kodlamaio.hrms.business.abstracts.VerificationCodeService;
 import kodlamaio.hrms.business.constants.Messages;
@@ -16,7 +15,6 @@ import kodlamaio.hrms.core.utilities.results.Result;
 import kodlamaio.hrms.core.utilities.results.SuccessResult;
 import kodlamaio.hrms.core.verifications.VerificationService;
 import kodlamaio.hrms.entities.concreates.Candidate;
-import kodlamaio.hrms.entities.concreates.EmployeeConfirmsEmployer;
 import kodlamaio.hrms.entities.concreates.Employer;
 import kodlamaio.hrms.entities.concreates.VerificationCode;
 import kodlamaio.hrms.entities.dtos.CandidateDto;
@@ -31,24 +29,21 @@ public class AuthManager implements AuthService {
 	private ValidationService validationService;
 	private VerificationService verificationService;
 	private VerificationCodeService verificationCodeService;
-	private EmployeeConfirmsEmployerService employeeConfirmsEmployerService;
 
 	@Autowired
 	public AuthManager(ModelMapper modelMapper, CandidateService candidateService, EmployerService employerService,
 			ValidationService validationService, VerificationService verificationService,
-			VerificationCodeService verificationCodeService,
-			EmployeeConfirmsEmployerService employeeConfirmsEmployerService) {
+			VerificationCodeService verificationCodeService) {
 		this.modelMapper = modelMapper;
 		this.candidateService = candidateService;
 		this.employerService = employerService;
 		this.validationService = validationService;
 		this.verificationService = verificationService;
 		this.verificationCodeService = verificationCodeService;
-		this.employeeConfirmsEmployerService = employeeConfirmsEmployerService;
 	}
 
 	@Override
-	public Result registerToCandidate(CandidateDto candidateDto) {
+	public Result candidateRegister(CandidateDto candidateDto) {
 		Candidate candidate = modelMapper.map(candidateDto, Candidate.class);
 		// Fake Mernis
 		if (!this.validationService.CheckIfRealPerson(candidateDto.getFirstName(), candidateDto.getLastName(),
@@ -70,7 +65,7 @@ public class AuthManager implements AuthService {
 	}
 
 	@Override
-	public Result registerToEmployer(EmployerDto employerDto) {
+	public Result employerRegister(EmployerDto employerDto) {
 		Employer employer = modelMapper.map(employerDto, Employer.class);
 
 		if (!isEmailEqualsToDomain(employerDto.getEmail(), employerDto.getWebAddress())) {
@@ -94,26 +89,14 @@ public class AuthManager implements AuthService {
 	}
 
 	@Override
-	public Result verifyToCandidate(String code) {
-		VerificationCode verificationCode = this.verificationCodeService.findByCode(code);
+	public Result emailVerify(String code) {
+		VerificationCode verificationCode = this.verificationCodeService.findByCode(code).getData();
 
 		verificationCode.setVerified(true);
 
 		this.verificationCodeService.add(verificationCode);
 
 		return new SuccessResult(Messages.verifiedCandidate);
-	}
-
-	@Override
-	public Result verifyToEmployer(int employerId) {
-		EmployeeConfirmsEmployer employeeConfirmsEmployer = this.employeeConfirmsEmployerService
-				.findByEmployer(employerId);
-
-		employeeConfirmsEmployer.setConfirmed(true);
-
-		this.employeeConfirmsEmployerService.add(employeeConfirmsEmployer);
-
-		return new SuccessResult(Messages.verifiedEmployer);
 	}
 
 	// Business Rules

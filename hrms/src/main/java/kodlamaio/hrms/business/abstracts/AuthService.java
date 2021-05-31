@@ -5,8 +5,7 @@ import kodlamaio.hrms.entities.dtos.CandidateDto;
 import kodlamaio.hrms.entities.dtos.EmployerDto;
 
 public interface AuthService {
-	Result registerToCandidate(CandidateDto candidateDto);
-	Result registerToEmployer(EmployerDto employerDto);
-	Result verifyToEmployer(int employerId);
-	Result verifyToCandidate(String code);
+	Result candidateRegister(CandidateDto candidateDto);
+	Result employerRegister(EmployerDto employerDto);
+	Result emailVerify(String code);	
 }

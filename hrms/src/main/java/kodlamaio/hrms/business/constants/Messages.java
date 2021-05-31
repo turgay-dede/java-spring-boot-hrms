@@ -39,7 +39,7 @@ public class Messages {
 	
 	//JobPosting
 	public static String addJobPosting = "İlan eklendi"; 
-	public static String passiveJobPosting = "İlan kapatıldı"; 
+	public static String passiveJobPosting = "İlan durumu değiştirildi"; 
 	public static String activeJobPostingListed = "Aktif ilanlar listelendi";
 	public static String notFoundActiveJobPosting = "Aktif ilan bulunamadı";
 	public static String companyActivePostingListed = "Şirketin aktif ilanları listelendi";
