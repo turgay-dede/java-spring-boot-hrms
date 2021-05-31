@@ -10,9 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import kodlamaio.hrms.core.utilities.annotations.UniqueJobTitle;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,18 +32,18 @@ public class JobTitle {
 	@Column(name="id")
 	private int id;	
 	
+	@NotBlank(message="Başlık alanı boş geçilemez")
+	@UniqueJobTitle
 	@Column(name="title")
 	private String title;	
 
+	@JsonIgnore
 	@Column(name="status")
 	private boolean status;	
 	
+	@JsonIgnore
 	@Column(name="created_at")
 	private LocalDate createdAt;
-	
-	public void setCreatedAt() {
-		this.createdAt = LocalDate.now();
-	}
 	
 	@OneToMany(mappedBy = "jobTitle")
 	private List<JobPosting> jobPostings;

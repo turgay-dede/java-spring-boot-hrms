@@ -1,8 +1,6 @@
 package kodlamaio.hrms.business.concreates;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +22,6 @@ public class UserManager implements UserService{
 		super();
 		this.userDao = userDao;
 	}
-	
-	Map<String, String> message = new HashMap<String, String>();
 
 	@Override
 	public List<User> getAll() {
@@ -33,19 +29,15 @@ public class UserManager implements UserService{
 	}
 	
 	@Override
-	public DataResult<User> findByEmail(String email) {
-		message.clear();
+	public DataResult<User> findByEmail(String email) {		
 		
 		User data = this.userDao.findByEmail(email);
 		
 		if (data != null) {
-			message.put("listedByEmail", Messages.listedByEmail);
-			return new SuccessDataResult<User>(data,message);			
-		}
+			
+			return new SuccessDataResult<User>(data,Messages.listedByEmail);			
+		}		
 		
-		message.put("notFoundByEmail", Messages.notFoundByEmail);
-		
-		return new ErrorDataResult<User>(message);
-		
+		return new ErrorDataResult<User>(Messages.notFoundByEmail);		
 	}
 }

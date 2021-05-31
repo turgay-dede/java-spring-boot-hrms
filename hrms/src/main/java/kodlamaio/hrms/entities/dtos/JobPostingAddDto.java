@@ -13,7 +13,8 @@ public class JobPostingAddDto {
 	private int cityId;
 	private int employerId;
 	private String description;
-	private String salary;
+	private int minSalary;
+	private int maxSalary;
 	private String positionCount;
 	private LocalDate deadline;
 	private boolean status;

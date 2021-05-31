@@ -1,10 +1,8 @@
 package kodlamaio.hrms.core.utilities.results;
 
-import java.util.Map;
-
 public class ErrorDataResult<T> extends DataResult<T> {
 
-	public ErrorDataResult(T data, Map<String,String> message) {
+	public ErrorDataResult(T data, String message) {
 		super(data, false ,message);
 	}
 	
@@ -12,7 +10,7 @@ public class ErrorDataResult<T> extends DataResult<T> {
 		super(data,false);
 	}
 	
-	public ErrorDataResult(Map<String,String> message) {
+	public ErrorDataResult(String message) {
 		super(null, false ,message);
 	}
 	

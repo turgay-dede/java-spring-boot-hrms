@@ -10,64 +10,59 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name="job_postings")
+@AllArgsConstructor
+@Table(name = "job_postings")
 public class JobPosting {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id")
+	@Column(name = "id")
 	private int id;
-	
-	@Column(name="description")
+
+	@NotBlank(message = "İş tanımı yapmak zorunludur")
+	@Column(name = "description")
 	private String description;
-	
-	@Column(name="salary")
-	private String salary;
-	
-	@Column(name="position_count")
+
+	@Column(name = "min_salary")
+	private int minSalary;
+
+	@Column(name = "max_salary")
+	private int maxSalary;
+
+	@NotBlank(message = "Açık pozisyon alanı zorunludur")
+	@Column(name = "position_count")
 	private String positionCount;
-	
-	@Column(name="deadline")
+
+	@Column(name = "deadline")
 	private LocalDate deadline;
-	
-	@Column(name="status")
+
+	@Column(name = "status")
 	private boolean status;
-	
-	public JobPosting(String description, String salary, String positionCount, LocalDate deadline, boolean status,
-			LocalDate createdAt, JobTitle jobTitle, City city, Employer employer) {
-		super();
-		this.description = description;
-		this.salary = salary;
-		this.positionCount = positionCount;
-		this.deadline = deadline;
-		this.status = status;
-		this.createdAt = createdAt;
-		this.jobTitle = jobTitle;
-		this.city = city;
-		this.employer = employer;
-	}
 
-	@Column(name="created_at")
+	@Column(name = "created_at")
 	private LocalDate createdAt;
-	
+
+	@NotBlank(message = "İş pozisyonu alanı zorunludur")
+	@ManyToOne
+	@JoinColumn(name = "job_title_id")
+	private JobTitle jobTitle;
+
+	@NotBlank(message = "Şehir seçme alanı zorunludur")
+	@ManyToOne
+	@JoinColumn(name = "city_id")
+	private City city;
 
 	@ManyToOne
-	@JoinColumn(name="job_title_id")
-	private JobTitle jobTitle;
-	
-	@ManyToOne
-	@JoinColumn(name="city_id")
-	private City city;
-	
-	 @ManyToOne
-	 @JoinColumn(name = "employer_id")
-	 private Employer employer;
+	@JoinColumn(name = "employer_id")
+	private Employer employer;	
 
 }

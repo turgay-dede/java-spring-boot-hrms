@@ -19,6 +19,5 @@ public interface JobPostingDao extends JpaRepository<JobPosting, Integer> {
 	@Query("select new kodlamaio.hrms.entities.dtos.JobPostingDto(id, employer.companyName, jobTitle.title, positionCount, "
 			+ "createdAt, deadline) from JobPosting where status = true and employer.companyName=:companyName")
 	List<JobPostingDto> getByCompanyNameAndStatus(@Param("companyName") String companyName);
-	
 
 }

@@ -1,8 +1,6 @@
 package kodlamaio.hrms.business.concreates;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,45 +25,35 @@ public class CandidateManager implements CandidateService {
 		super();
 		this.candidateDao = candidateDao;		
 	}
-	
-	Map<String, String> message = new HashMap<String, String>();
+		
 
 	@Override
-	public DataResult<List<Candidate>> getAll() {
-		message.clear();
-		message.put("candidateListed", Messages.candidateListed );
+	public DataResult<List<Candidate>> getAll() {		
 		
-		return new SuccessDataResult<List<Candidate>>(this.candidateDao.findAll(),message);
+		return new SuccessDataResult<List<Candidate>>(this.candidateDao.findAll(),Messages.candidateListed);
 	}
 
 	@Override
-	public Result add(Candidate candidate) {
-		message.clear();
+	public Result add(Candidate candidate) {	
 		
 		candidate.setId(0);
 		
-		this.candidateDao.save(candidate);
+		this.candidateDao.save(candidate);	
 		
-		message.put("candidateAdd", Messages.candidateAdded);
-		
-		return new SuccessResult(message);
+		return new SuccessResult(Messages.candidateAdded);
 
 	}	
 
 	@Override
 	public DataResult<Candidate> findByIdentificationNumber(String identificationNumber) {
-		message.clear();
 		
 		Candidate data = this.candidateDao.findByIdentificationNumber(identificationNumber);
 		
-		if (data != null) {
-			message.put("listedByIdentificationNumber", Messages.listedByIdentificationNumber);
-			return new SuccessDataResult<Candidate>(data,message);			
+		if (data != null) {	
+			return new SuccessDataResult<Candidate>(data,Messages.listedByIdentificationNumber);			
 		}
-		
-		message.put("notFoundByIdentificationNumber", Messages.notFoundByIdentificationNumber);
-		
-		return new ErrorDataResult<Candidate>(message);
+				
+		return new ErrorDataResult<Candidate>(Messages.notFoundByIdentificationNumber);
 	}		
 
 }

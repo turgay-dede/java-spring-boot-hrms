@@ -1,17 +1,15 @@
 package kodlamaio.hrms.core.utilities.results;
 
-import java.util.Map;
-
 public class Result {
 	private boolean success;
-	private Map<String,String> message;	
+	private String message;	
 	
 
 	public Result(boolean success) {
 		this.success = success;
 	}
 	
-	public Result(boolean success, Map<String,String> message) {
+	public Result(boolean success, String message) {
 		this(success);
 		this.message = message;
 	}
@@ -20,7 +18,7 @@ public class Result {
 		return success;
 	}
 
-	public Map<String,String> getMessage() {
+	public String getMessage() {
 		return message;
 	}
 

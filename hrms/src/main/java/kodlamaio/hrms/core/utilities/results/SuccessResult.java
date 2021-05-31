@@ -1,6 +1,5 @@
 package kodlamaio.hrms.core.utilities.results;
 
-import java.util.Map;
 
 public class SuccessResult extends Result {
 	
@@ -8,7 +7,7 @@ public class SuccessResult extends Result {
 		super(true);		
 	}
 	
-	public SuccessResult(Map<String,String> message) {
+	public SuccessResult(String message) {
 		super(true, message);		
 	}
 	

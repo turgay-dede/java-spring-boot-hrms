@@ -3,9 +3,7 @@ package kodlamaio.hrms.business.concreates;
 
 import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -34,13 +32,10 @@ public class JobPostingManager implements JobPostingService {
 		super();
 		this.jobPostingDao = jobPostingDao;
 		this.modelMapper=modelMapper;
-	}
-	
-	Map<String, String> message = new HashMap<String, String>();
+	}	
 	
 	@Override
 	public Result add(JobPostingAddDto jobPostingAddDto) {
-		message.clear();
 		
 		JobPosting jobPosting = modelMapper.map(jobPostingAddDto, JobPosting.class);
 		
@@ -48,56 +43,43 @@ public class JobPostingManager implements JobPostingService {
 		
 		jobPosting.setCreatedAt(LocalDate.now());
 		
-		this.jobPostingDao.save(jobPosting);
+		this.jobPostingDao.save(jobPosting);	
 		
-		message.put("add", Messages.addJobPosting);
-		
-		return new SuccessResult(message);
+		return new SuccessResult(Messages.addJobPosting);
 	}
 	
 	@Override
 	public Result passiveJobPosting(int id) {
-		message.clear();
 		
 		JobPosting tempJobPosting = this.jobPostingDao.getOne(id);	
 		
 		tempJobPosting.setStatus(false);
 		
 		this.jobPostingDao.save(tempJobPosting);
-		
-		message.put("passive", Messages.passiveJobPosting);
-		
-		return new SuccessResult(message);
+
+		return new SuccessResult(Messages.passiveJobPosting);
 	}
 
 	@Override
-	public DataResult<List<JobPostingDto>> getByStatusTrue() {
-		message.clear();
+	public DataResult<List<JobPostingDto>> getByStatusTrue() {	
 		
-		message.put("active",Messages.activeJobPostingListed);
-		
-		return new SuccessDataResult<List<JobPostingDto>>(this.jobPostingDao.getByStatusTrue(),message);
+		return new SuccessDataResult<List<JobPostingDto>>(this.jobPostingDao.getByStatusTrue(),Messages.activeJobPostingListed);
 	}
 
 	@Override
-	public DataResult<List<JobPostingDto>> getByCompanyNameAndStatus(String companyName) {
-		message.clear();
+	public DataResult<List<JobPostingDto>> getByCompanyNameAndStatus(String companyName) {		
 		
 		var result = this.jobPostingDao.getByCompanyNameAndStatus(companyName);
 		
-		if(result.isEmpty() || result == null) {
-			 message.put("not-found-company-active", Messages.notFoundActiveJobPosting);
-			 return new ErrorDataResult<>(message);			 
-		}
+		if(result.isEmpty() || result == null) {		
+			 return new ErrorDataResult<>(Messages.notFoundActiveJobPosting);			 
+		}	
 		
-		message.put("company-active", Messages.companyActivePostingListed);
-		
-		return new SuccessDataResult<List<JobPostingDto>>(result,message);
+		return new SuccessDataResult<List<JobPostingDto>>(result,Messages.companyActivePostingListed);
 	}
 
 	@Override
 	public DataResult<List<JobPostingDto>> getAllByStatusTrueSorted() {
-		message.clear();
 		
 		var result = this.jobPostingDao.getByStatusTrue();
 		
@@ -105,15 +87,12 @@ public class JobPostingManager implements JobPostingService {
 	                .sorted(Comparator.comparing(JobPostingDto::getCreatedAt).reversed())
 	                .collect(Collectors.toList());
 		 
-		 if(result.isEmpty() || result == null) {			 
-			 message.put("not-found-active-posting", Messages.notFoundActiveJobPosting);
-			 return new ErrorDataResult<>(message);			 
-		 }		 
+		 if(result.isEmpty() || result == null) {		 
 		
-		 message.put("sorted-actives", Messages.activeJobPostingListed);
+			 return new ErrorDataResult<>(Messages.notFoundActiveJobPosting);			 
+		 }		
 		 
-		 return new SuccessDataResult<>(sortedResult,message);		
-	}	
-
+		 return new SuccessDataResult<>(sortedResult,Messages.activeJobPostingListed);		
+	}
 
 }

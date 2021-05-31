@@ -18,6 +18,4 @@ public interface JobPostingService {
 	
 	DataResult<List<JobPostingDto>> getByCompanyNameAndStatus(String companyName);
 
-
-
 }

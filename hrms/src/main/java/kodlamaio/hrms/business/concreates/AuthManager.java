@@ -1,9 +1,5 @@
 package kodlamaio.hrms.business.concreates;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +8,6 @@ import kodlamaio.hrms.business.abstracts.AuthService;
 import kodlamaio.hrms.business.abstracts.CandidateService;
 import kodlamaio.hrms.business.abstracts.EmployeeConfirmsEmployerService;
 import kodlamaio.hrms.business.abstracts.EmployerService;
-import kodlamaio.hrms.business.abstracts.UserService;
 import kodlamaio.hrms.business.abstracts.VerificationCodeService;
 import kodlamaio.hrms.business.constants.Messages;
 import kodlamaio.hrms.core.utilities.adapters.ValidationService;
@@ -33,107 +28,58 @@ public class AuthManager implements AuthService {
 	private ModelMapper modelMapper;
 	private CandidateService candidateService;
 	private EmployerService employerService;
-	private UserService userService;
 	private ValidationService validationService;
 	private VerificationService verificationService;
 	private VerificationCodeService verificationCodeService;
 	private EmployeeConfirmsEmployerService employeeConfirmsEmployerService;
 
-
 	@Autowired
 	public AuthManager(ModelMapper modelMapper, CandidateService candidateService, EmployerService employerService,
-			UserService userService, ValidationService validationService, VerificationService verificationService,
+			ValidationService validationService, VerificationService verificationService,
 			VerificationCodeService verificationCodeService,
 			EmployeeConfirmsEmployerService employeeConfirmsEmployerService) {
 		this.modelMapper = modelMapper;
 		this.candidateService = candidateService;
 		this.employerService = employerService;
-		this.userService = userService;
 		this.validationService = validationService;
 		this.verificationService = verificationService;
 		this.verificationCodeService = verificationCodeService;
 		this.employeeConfirmsEmployerService = employeeConfirmsEmployerService;
 	}
-	
-	Map<String, String> message = new HashMap<String, String>();
-	
+
 	@Override
 	public Result registerToCandidate(CandidateDto candidateDto) {
-		Candidate candidate = modelMapper.map(candidateDto, Candidate.class);	
-		
-		message.clear();
-		if (!isAllFieldsFilled(candidateDto.getFirstName(), candidateDto.getLastName(),
-				candidateDto.getIdentificationNumber(), candidateDto.getEmail(), candidateDto.getPassword())) {
-			message.put("allFieldsFilled", Messages.allFieldsFilled);
-
-		}
-		String email = "";
-		if (!isMailFormatValid(candidateDto.getEmail())) {
-			email = Messages.mailFormatNotValid + ". ";			
-		}
-
-		if (isEmailExists(candidateDto.getEmail())) {
-			email = Messages.emailExists + ". ";
-			message.put("email", email);
-		}
-
-		if (isIdentificationNumberExists(candidateDto.getIdentificationNumber())) {
-			message.put("identificationNumber", Messages.IdentificationNumberExists);
-
-		}
-
-		if (!isEqualsPasswordConfirm(candidateDto.getPassword(), candidateDto.getConfirmPassword())) {
-			message.put("password", Messages.passwordNotMatched);
-		}
-
+		Candidate candidate = modelMapper.map(candidateDto, Candidate.class);
 		// Fake Mernis
 		if (!this.validationService.CheckIfRealPerson(candidateDto.getFirstName(), candidateDto.getLastName(),
 				candidateDto.getIdentificationNumber(), candidateDto.getBirthDate().toString())) {
 
-			message.put("verificationError", Messages.verificationError);
+			return new ErrorResult(Messages.verificationError);
 		}
-		if (message.size() > 0) {
-			return new ErrorResult(message);
+
+		if (!isEqualsPasswordConfirm(candidateDto.getPassword(), candidateDto.getConfirmPassword())) {
+			return new ErrorResult(Messages.passwordNotMatched);
 		}
 
 		candidateService.add(candidate);
 		// Fake Email
 		verificationService.sendEmail(candidateDto.getEmail(),
 				verificationCodeService.generateCode(candidate.getId()).getData());
-		
-		message.put("registerAndVerification", Messages.registerAndVerification);
-		
-		return new SuccessResult(message);
+
+		return new SuccessResult(Messages.registerAndVerification);
 	}
 
 	@Override
 	public Result registerToEmployer(EmployerDto employerDto) {
 		Employer employer = modelMapper.map(employerDto, Employer.class);
-		
-		message.clear();
 
-		String email = "";
-
-		if (isEmailExists(employerDto.getEmail())) {			
-			email += Messages.emailExists + ". ";
-
-		}
 		if (!isEmailEqualsToDomain(employerDto.getEmail(), employerDto.getWebAddress())) {
-			email += Messages.emailEqualsToDomain + ". ";
-			
+			return new ErrorResult(Messages.emailEqualsToDomain);
+
 		}
-		
-		if(!email.isEmpty()) {
-			message.put("email", email);
-		}
-		
-		
+
 		if (!isEqualsPasswordConfirm(employerDto.getPassword(), employerDto.getConfirmPassword())) {
-			message.put("password", Messages.passwordNotMatched);
-		}
-		
-		if (message.size() > 0) {
-			return new ErrorResult(message);
+			return new ErrorResult(Messages.passwordNotMatched);
 		}
 
 		this.employerService.add(employer);
@@ -143,58 +89,34 @@ public class AuthManager implements AuthService {
 				verificationCodeService.generateCode(employer.getId()).getData());
 
 		// TODO: Employee Verify
-		message.put("registerAndVerification", Messages.registerAndVerification);
-		
-		return new SuccessResult(message);
+
+		return new SuccessResult(Messages.registerAndVerification);
 	}
 
 	@Override
 	public Result verifyToCandidate(String code) {
 		VerificationCode verificationCode = this.verificationCodeService.findByCode(code);
-		
-		message.clear();
-		
+
 		verificationCode.setVerified(true);
-		
+
 		this.verificationCodeService.add(verificationCode);
-		
-		message.put("verifiedCandidate", Messages.verifiedCandidate);
-		
-		return new SuccessResult(message);
+
+		return new SuccessResult(Messages.verifiedCandidate);
 	}
 
 	@Override
 	public Result verifyToEmployer(int employerId) {
 		EmployeeConfirmsEmployer employeeConfirmsEmployer = this.employeeConfirmsEmployerService
-				.findByEmployer(employerId);		
-		
-		message.clear();
-		
+				.findByEmployer(employerId);
+
 		employeeConfirmsEmployer.setConfirmed(true);
-		
+
 		this.employeeConfirmsEmployerService.add(employeeConfirmsEmployer);
-		
-		message.put("verifiedEmployer", Messages.verifiedEmployer);
-		
-		return new SuccessResult(message);
+
+		return new SuccessResult(Messages.verifiedEmployer);
 	}
 
 	// Business Rules
-
-	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
-			Pattern.CASE_INSENSITIVE);
-
-	private boolean isMailFormatValid(String email) {
-		return VALID_EMAIL_ADDRESS_REGEX.matcher(email).find();
-	}
-
-	private boolean isEmailExists(String email) {
-		return (userService.findByEmail(email).getData() != null);
-	}
-
-	private boolean isIdentificationNumberExists(String identificationNumber) {
-		return (candidateService.findByIdentificationNumber(identificationNumber).getData() != null);
-	}
 
 	private boolean isEqualsPasswordConfirm(String password, String confirmPassword) {
 
@@ -204,15 +126,6 @@ public class AuthManager implements AuthService {
 	private boolean isEmailEqualsToDomain(String email, String webAddress) {
 		String[] array = email.split("@");
 		return array[1].equals(webAddress);
-	}
-
-	private boolean isAllFieldsFilled(String firstName, String lastName, String identificationNumber, String email,
-			String password) {
-		if (firstName.length() <= 0 || lastName.length() <= 0 || email.length() <= 0 || password.length() <= 0
-				|| identificationNumber.length() != 11) {
-			return false;
-		}
-		return true;
 	}
 
 }

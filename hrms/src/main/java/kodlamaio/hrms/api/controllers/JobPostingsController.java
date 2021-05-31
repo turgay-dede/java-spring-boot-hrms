@@ -47,9 +47,5 @@ public class JobPostingsController {
 	public DataResult<List<JobPostingDto>> getByCompanyNameAndStatusTrue(@RequestParam String companyName){
 		return this.jobPostingService.getByCompanyNameAndStatus(companyName);
 	}
-
-	@GetMapping("/getAllByStatusTrueSorted")
-	public DataResult<List<JobPostingDto>>getAllByStatusTrueSorted(){
-		return this.jobPostingService.getAllByStatusTrueSorted();
-	}
+	
 }

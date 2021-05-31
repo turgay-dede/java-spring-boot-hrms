@@ -1,8 +1,6 @@
 package kodlamaio.hrms.business.concreates;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +24,7 @@ public class VerificationCodeManager implements VerificationCodeService {
 	public VerificationCodeManager(VerificationCodeDao verificationCodeDao) {
 		super();
 		this.verificationCodeDao = verificationCodeDao;
-	}
-	
-	Map<String, String> message = new HashMap<String, String>();
-	
+	}	
 
 	@Override
 	public List<VerificationCode> getAll() {
@@ -37,10 +32,7 @@ public class VerificationCodeManager implements VerificationCodeService {
 	}	
 
 	@Override
-	public DataResult<String> generateCode(int userId) {
-		message.clear();
-		
-		Map<String, String> messageMap = new HashMap<String, String>();
+	public DataResult<String> generateCode(int userId) {			
 		
 		String code = UUID.randomUUID().toString();
 		
@@ -52,9 +44,7 @@ public class VerificationCodeManager implements VerificationCodeService {
 		
 		this.verificationCodeDao.save(verificationCode);
 		
-		messageMap.put("codeGenerated", Messages.codeGenerated);
-		
-		return new SuccessDataResult<String>(code,messageMap);
+		return new SuccessDataResult<String>(code,Messages.codeGenerated);
 	}
 
 	@Override
@@ -64,16 +54,11 @@ public class VerificationCodeManager implements VerificationCodeService {
 	}
 
 	@Override
-	public Result add(VerificationCode verificationCode) {
-		message.clear();
-		
-		Map<String, String> messageMap = new HashMap<String, String>();
+	public Result add(VerificationCode verificationCode) {		
 		
 		this.verificationCodeDao.save(verificationCode);
 		
-		messageMap.put("verificationCodeAdded", Messages.verificationCodeAdded);
-		
-		return new SuccessResult(messageMap);
+		return new SuccessResult( Messages.verificationCodeAdded);
 	}	
 
 }
