@@ -49,6 +49,21 @@ public class JobPostingManager implements JobPostingService {
 	}
 	
 	@Override
+	public Result delete(int jobPostingId) {
+		JobPosting tempJobPosting = this.jobPostingDao.getOne(jobPostingId);
+		this.jobPostingDao.delete(tempJobPosting);
+		return new SuccessResult("Silindi");
+	}
+
+	@Override
+	public Result update(JobPostingAddDto jobPostingAddDto) {
+		JobPosting jobPosting = modelMapper.map(jobPostingAddDto, JobPosting.class);
+		
+		this.jobPostingDao.save(jobPosting);
+		return new SuccessResult("Güncellendi");
+	}
+	
+	@Override
 	public Result changeStatus(int id) {
 		
 		JobPosting tempJobPosting = this.jobPostingDao.getOne(id);			
@@ -94,5 +109,7 @@ public class JobPostingManager implements JobPostingService {
 		 
 		 return new SuccessDataResult<>(sortedResult,Messages.activeJobPostingListed);		
 	}
+
+	
 
 }

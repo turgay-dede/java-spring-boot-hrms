@@ -7,8 +7,15 @@ import kodlamaio.hrms.core.utilities.results.Result;
 import kodlamaio.hrms.entities.concreates.JobTitle;
 
 public interface JobTitleService {
-	DataResult<List<JobTitle>> getAll();
+
 	Result add(JobTitle jobTitle);
+	
+	Result delete(int  jobTitleId);
+	
+	Result update(JobTitle jobTitle);
+
 	DataResult<JobTitle> getByTitle(String title);
+
+	DataResult<List<JobTitle>> getAll();
 
 }

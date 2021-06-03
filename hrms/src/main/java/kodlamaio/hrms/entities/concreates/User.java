@@ -59,7 +59,7 @@ public class User {
 	private boolean status;
 	
 	@JsonIgnore
-	@Column(name = "created_at")
+	@Column(name = "created_at",updatable = false)
 	private LocalDate createdAt;
 
 }

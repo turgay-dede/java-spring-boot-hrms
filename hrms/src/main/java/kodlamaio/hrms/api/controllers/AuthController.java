@@ -47,8 +47,8 @@ public class AuthController {
 
 	}
 
-	@GetMapping("/emailVerify")
-	public Result verifyCandidate(String code) {
+	@GetMapping("/email-verify")
+	public Result verifyEmail(String code) {
 		return this.authService.emailVerify(code);
 	}
 

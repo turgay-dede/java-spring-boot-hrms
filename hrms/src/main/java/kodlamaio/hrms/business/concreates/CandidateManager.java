@@ -54,6 +54,36 @@ public class CandidateManager implements CandidateService {
 		}
 				
 		return new ErrorDataResult<Candidate>(Messages.notFoundByIdentificationNumber);
+	}
+
+
+	@Override
+	public Result delete(int candidateId) {
+		this.candidateDao.delete(this.candidateDao.getOne(candidateId));
+		return new SuccessResult("Silindi");
+	}
+
+
+	@Override
+	public Result update(Candidate candidate) {
+		Candidate tempCandidate = this.candidateDao.getOne(candidate.getId());
+		tempCandidate.setFirstName(candidate.getFirstName());
+		tempCandidate.setLastName(candidate.getLastName());
+		tempCandidate.setEmail(candidate.getEmail());
+		tempCandidate.setIdentificationNumber(candidate.getIdentificationNumber());
+		tempCandidate.setPassword(candidate.getPassword());
+		tempCandidate.setBirthDate(candidate.getBirthDate());
+		this.candidateDao.save(tempCandidate);
+		return new SuccessResult("Güncellendi");
+	}
+
+
+	@Override
+	public Result softDelete(int candidateId) {
+		Candidate tempCandidate = this.candidateDao.getOne(candidateId);
+		tempCandidate.setStatus(false);
+		this.candidateDao.save(tempCandidate);
+		return null;
 	}		
 
 }

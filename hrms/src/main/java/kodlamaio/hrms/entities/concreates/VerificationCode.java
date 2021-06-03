@@ -40,7 +40,7 @@ public class VerificationCode {
 	@Column(name="status")
 	private boolean status;
 
-	@Column(name="created_at")
+	@Column(name = "created_at",updatable = false)
 	private LocalDate createdAt;
 
 }

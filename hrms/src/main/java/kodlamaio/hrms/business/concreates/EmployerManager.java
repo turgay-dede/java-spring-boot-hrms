@@ -1,6 +1,7 @@
 package kodlamaio.hrms.business.concreates;
 
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class EmployerManager implements EmployerService {
 	@Override
 	public Result add(Employer employer) {
 
+		employer.setCreatedAt(LocalDate.now());
+
 		this.employerDao.save(employer);	
 		
 		return new SuccessResult(Messages.emloyerAdded);
@@ -44,6 +47,27 @@ public class EmployerManager implements EmployerService {
 	public DataResult<Employer> getById(int id) {
 		
 		return new SuccessDataResult<Employer>(this.employerDao.getOne(id));
+	}
+
+	@Override
+	public Result delete(int employerId) {
+		Employer tempEmployer = this.employerDao.getOne(employerId);
+		this.employerDao.delete(tempEmployer);
+		return new SuccessResult("Silindi");
+	}
+
+	@Override
+	public Result update(Employer employer) {
+		Employer tempEmployer = this.employerDao.getOne(employer.getId());
+		tempEmployer.setCompanyName(employer.getCompanyName());
+		tempEmployer.setEmail(employer.getEmail());
+		tempEmployer.setWebAddress(employer.getWebAddress());
+		tempEmployer.setPassword(employer.getPassword());
+		tempEmployer.setPhoneNumber(employer.getPhoneNumber());
+		
+		this.employerDao.save(tempEmployer);
+		
+		return new SuccessResult("Güncellendi");
 	}	
 
 }

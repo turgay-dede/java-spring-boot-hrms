@@ -7,8 +7,15 @@ import kodlamaio.hrms.core.utilities.results.Result;
 import kodlamaio.hrms.entities.concreates.Employer;
 
 public interface EmployerService {
-	DataResult<List<Employer>> getAll();
+
 	Result add(Employer employer);
-	DataResult<Employer> getById(int id);
 	
+	Result delete(int employerId);
+	
+	Result update(Employer employer);
+
+	DataResult<Employer> getById(int id);
+
+	DataResult<List<Employer>> getAll();
+
 }

@@ -6,8 +6,10 @@ import kodlamaio.hrms.core.utilities.results.DataResult;
 import kodlamaio.hrms.entities.concreates.User;
 
 public interface UserService {
-	DataResult<List<User>> getAll();
+
 	DataResult<User> findByEmail(String email);
+	
+	DataResult<List<User>> getAll();
 	
 	
 

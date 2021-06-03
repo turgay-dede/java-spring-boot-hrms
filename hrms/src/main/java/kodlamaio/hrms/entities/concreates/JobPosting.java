@@ -48,7 +48,7 @@ public class JobPosting {
 	@Column(name = "status")
 	private boolean status;
 
-	@Column(name = "created_at")
+	@Column(name = "created_at",updatable = false)
 	private LocalDate createdAt;
 
 	@NotBlank(message = "İş pozisyonu alanı zorunludur")

@@ -7,8 +7,13 @@ import kodlamaio.hrms.core.utilities.results.Result;
 import kodlamaio.hrms.entities.concreates.VerificationCode;
 
 public interface VerificationCodeService {
-	DataResult<List<VerificationCode>> getAll();
-	DataResult<String> generateCode(int userId);
-	DataResult<VerificationCode> findByCode(String code);
+
 	Result add(VerificationCode verificationCode);
+
+	DataResult<String> generateCode(int userId);
+
+	DataResult<VerificationCode> findByCode(String code);
+
+	DataResult<List<VerificationCode>> getAll();
+
 }

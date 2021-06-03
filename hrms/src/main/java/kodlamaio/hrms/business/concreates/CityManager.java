@@ -36,4 +36,19 @@ public class CityManager implements CityService {
 		return new SuccessResult();
 	}
 
+	@Override
+	public Result delete(int cityId) {
+		City tempCity = this.cityDao.getOne(cityId);
+		this.cityDao.delete(tempCity);
+		return new SuccessResult("Silindi");
+	}
+
+	@Override
+	public Result update(City city) {
+		City tempCity = this.cityDao.getOne(city.getId());
+		tempCity.setCityName(city.getCityName());
+		this.cityDao.save(tempCity);
+		return new SuccessResult("Güncellendi");
+	}
+
 }

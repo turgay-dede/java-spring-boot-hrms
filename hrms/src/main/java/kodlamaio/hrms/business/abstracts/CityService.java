@@ -7,8 +7,15 @@ import kodlamaio.hrms.core.utilities.results.Result;
 import kodlamaio.hrms.entities.concreates.City;
 
 public interface CityService {
-	DataResult<List<City>> getAll();
 	
 	Result add(City city);
+	
+	Result delete(int cityId);
+	
+	Result update(City city);
+	
+	DataResult<List<City>> getAll();
+	
+	
 
 }

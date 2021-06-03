@@ -40,6 +40,22 @@ public class JobTitleManager implements JobTitleService {
 		
 		return new SuccessResult(Messages.jobTitleAdded);
 	}
+	
+	@Override
+	public Result delete(int jobTitleId) {
+		JobTitle tempJobTitle = this.jobTitleDao.getOne(jobTitleId);
+		this.jobTitleDao.delete(tempJobTitle);
+		return new SuccessResult("Silindi");
+	}
+
+	@Override
+	public Result update(JobTitle jobTitle) {
+		JobTitle tempJobTitle = this.jobTitleDao.getOne(jobTitle.getId());
+		tempJobTitle.setTitle(jobTitle.getTitle());
+		
+		this.jobTitleDao.save(tempJobTitle);
+		return  new SuccessResult("Güncellendi");
+	}
 
 	@Override
 	public DataResult<JobTitle> getByTitle(String title) {
@@ -53,6 +69,8 @@ public class JobTitleManager implements JobTitleService {
 		
 		return new ErrorDataResult<>(Messages.notFoundJobTitle);
 	}
+
+	
 
 	// Business Rules
 
